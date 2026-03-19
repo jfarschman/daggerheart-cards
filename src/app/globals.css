@@ -1,26 +1,55 @@
-@import "tailwindcss";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --card-width: 63mm;
+  --card-height: 89mm;
+  --card-radius: 3mm;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+/* Screen Styles: Make it look like a tabletop app */
+body {
+  background-color: #1a1a1a;
+  color: #e5e5e5;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+/* Print Styles: The Magic Sauce */
+@media print {
+  @page {
+    size: letter;
+    margin: 0.5in; /* Standard margin for most home printers */
+  }
+
+  /* Hide the UI, Nav, and Buttons when printing */
+  .no-print {
+    display: none !important;
+  }
+
+  body {
+    background-color: white;
+  }
+
+  .print-grid {
+    display: grid;
+    /* 3 Columns of exactly 63mm */
+    grid-template-columns: repeat(3, var(--card-width));
+    /* Gutters to help with your 3D printed cutting template */
+    gap: 4mm; 
+    justify-content: center;
+    align-content: start;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* The Card Base Class */
+.dagger-card {
+  width: var(--card-width);
+  height: var(--card-height);
+  border-radius: var(--card-radius);
+  background: white;
+  color: black;
+  position: relative;
+  overflow: hidden;
+  border: 0.5px solid #ddd; /* Hairline for cutting */
+  page-break-inside: avoid;
 }
