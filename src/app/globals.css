@@ -18,26 +18,30 @@ body {
 @media print {
   @page {
     size: letter;
-    margin: 0.5in; /* Standard margin for most home printers */
-  }
-
-  /* Hide the UI, Nav, and Buttons when printing */
-  .no-print {
-    display: none !important;
+    margin: 0; /* Let the container handle the padding instead */
   }
 
   body {
-    background-color: white;
+    background-color: white !important;
+    margin: 0 !important;
+    padding: 0 !important;
   }
 
-  .print-grid {
-    display: grid;
-    /* 3 Columns of exactly 63mm */
-    grid-template-columns: repeat(3, var(--card-width));
-    /* Gutters to help with your 3D printed cutting template */
-    gap: 4mm; 
-    justify-content: center;
-    align-content: start;
+  .print-page {
+    width: 8.5in;
+    height: 11in;
+    overflow: hidden; /* Prevents "bleeding" into a second page */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    padding-top: 0.5in;
+    /* Only break page if there is actually another page coming */
+    page-break-after: auto; 
+  }
+
+  .print-page:not(:last-child) {
+    page-break-after: always;
   }
 }
 
@@ -52,4 +56,22 @@ body {
   overflow: hidden;
   border: 0.5px solid #ddd; /* Hairline for cutting */
   page-break-inside: avoid;
+}
+
+@media print {
+  .print-page {
+    width: 8.5in;
+    height: 11in;
+    margin: 0 auto;
+    padding-top: 0.5in; /* Centers the 3x3 grid vertically on the paper */
+    display: flex;
+    justify-content: center;
+    page-break-after: always;
+  }
+  
+  /* Ensure the background of the cards stays white even in 'Dark Mode' browsers */
+  .dagger-card {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
 }

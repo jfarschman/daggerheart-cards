@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import CardPreview from '../components/CardPreview';
 import CardEditor from '../components/CardEditor';
+import PrintGrid from '../components/PrintGrid';
 
 export default function Home() {
   // A blank template for when you click "New Card"
@@ -76,64 +77,68 @@ export default function Home() {
   if (!isLoaded) return <div className="min-h-screen bg-gray-900 text-white flex items-center justify-center">Loading Binder...</div>;
 
   return (
-    <main className="min-h-screen bg-gray-900 text-gray-100 p-8 font-sans">
-      <div className="max-w-6xl mx-auto flex flex-col md:flex-row gap-8">
+    <main className="min-h-screen bg-gray-900 text-gray-100 p-4 md:p-8 font-sans">
+      
+      {/* --- LAYER 1: THE INTERACTIVE UI --- */}
+      {/* 'no-print' tells the browser: "Do not show this on paper!" */}
+      <div className="no-print max-w-6xl mx-auto flex flex-col md:flex-row gap-8">
         
-        {/* Left Column: The Editor Area */}
-        <div className="flex-1 flex flex-col gap-4 no-print">
+        {/* LEFT COLUMN: Deck Management & Editing */}
+        <div className="flex-1 flex flex-col gap-6">
           
-          {/* DECK BROWSER: See all your saved cards */}
-          <div className="bg-gray-800 p-4 rounded-xl shadow-xl border border-gray-700">
+          {/* THE DECK BROWSER (The horizontal list of saved cards) */}
+          <section className="bg-gray-800 p-4 rounded-xl shadow-xl border border-gray-700">
             <div className="flex justify-between items-center mb-3">
-              <h2 className="text-gray-300 font-semibold text-sm uppercase tracking-wider">Your Deck ({deck.length})</h2>
-              <button 
-                onClick={handleNewCard}
-                className="px-3 py-1 bg-blue-600 hover:bg-blue-500 rounded text-white text-xs font-bold transition-colors"
-              >
+              <h2 className="text-gray-400 font-bold text-xs uppercase tracking-widest">Your Digital Binder</h2>
+              <button onClick={handleNewCard} className="bg-blue-600 hover:bg-blue-500 text-white px-3 py-1 rounded text-xs font-bold transition-all">
                 + New Card
               </button>
             </div>
-            
-            {/* Scrollable list of saved cards */}
-            <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-thin">
+            <div className="flex gap-2 overflow-x-auto pb-2 border-t border-gray-700 pt-3">
               {deck.map(c => (
                 <button
                   key={c.id}
                   onClick={() => setCurrentCard(c)}
-                  className={`flex-shrink-0 text-xs px-3 py-2 rounded border whitespace-nowrap transition-colors ${
+                  className={`flex-shrink-0 px-4 py-2 rounded-md text-xs border transition-all ${
                     currentCard.id === c.id 
-                      ? 'border-green-500 bg-gray-900 text-white' 
-                      : 'border-gray-600 bg-gray-700 text-gray-300 hover:border-gray-400'
+                      ? 'border-green-500 bg-green-500/10 text-green-400' 
+                      : 'border-gray-600 bg-gray-700 text-gray-300 hover:bg-gray-600'
                   }`}
                 >
-                  {c.title || 'Untitled'}
+                  {c.title || 'Untitled Card'}
                 </button>
               ))}
-              {deck.length === 0 && <span className="text-xs text-gray-500 italic">No cards saved yet. Click Save Card below.</span>}
             </div>
-          </div>
+          </section>
 
-          {/* THE EDITOR */}
-          <div className="bg-gray-800 p-6 rounded-xl shadow-xl border border-gray-700">
+          {/* THE EDITOR FORM */}
+          <section className="bg-gray-800 p-6 rounded-xl shadow-xl border border-gray-700">
             <div className="flex justify-between items-center mb-6">
-              <h1 className="text-2xl font-bold text-white">Card Forge</h1>
-              <button 
-                onClick={handleSaveCard}
-                className="px-4 py-2 bg-green-600 hover:bg-green-500 rounded text-white font-medium transition-colors text-sm shadow"
-              >
-                Save Card
+              <h1 className="text-xl font-bold text-white">Card Editor</h1>
+              <button onClick={handleSaveCard} className="bg-green-600 hover:bg-green-500 text-white px-6 py-2 rounded-lg font-bold shadow-lg transition-all">
+                Save Changes
               </button>
             </div>
             <CardEditor card={currentCard} setCard={setCurrentCard} />
-          </div>
+          </section>
         </div>
 
-        {/* Right Column: The Preview Area */}
-        <div className="flex-1 flex flex-col items-center justify-center bg-gray-950 p-8 rounded-xl border border-gray-800 shadow-inner overflow-hidden">
-          <h2 className="text-sm uppercase tracking-widest text-gray-500 mb-6 no-print">Live Preview</h2>
-          <CardPreview card={currentCard} />
+        {/* RIGHT COLUMN: The Single Card Preview */}
+        <div className="flex-1 sticky top-8 h-fit flex flex-col items-center">
+          <h2 className="text-xs uppercase tracking-widest text-gray-500 mb-4">Live Preview</h2>
+          <div className="p-12 bg-gray-950 rounded-2xl border border-gray-800 shadow-2xl">
+             <CardPreview card={currentCard} />
+          </div>
+          <p className="mt-6 text-gray-500 text-xs italic text-center max-w-xs">
+            Dimensions are locked to 89mm x 63mm.<br/>Press Ctrl+P to print your full deck.
+          </p>
         </div>
       </div>
+
+      {/* --- LAYER 2: THE PRINT ENGINE --- */}
+      {/* This component is hidden via CSS until the printer is triggered. */}
+      <PrintGrid deck={deck} />
+
     </main>
   );
 }
