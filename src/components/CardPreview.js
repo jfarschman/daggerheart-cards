@@ -18,7 +18,7 @@ export default function CardPreview({ card }) {
   const bodyFontSize = data.imageConfig.fontSize || 11.5;
 
   return (
-    <div className="dagger-card shadow-lg print:shadow-none bg-white flex flex-col relative overflow-hidden">
+    <div className="dagger-card shadow-lg print:shadow-none bg-white flex flex-col relative overflow-hidden border-[3px] border-black rounded-xl">
       
       {/* 1. IMAGE BLOCK (Top Section) */}
       <div 

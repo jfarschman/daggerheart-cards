@@ -115,7 +115,7 @@ export default function Home() {
 
   return (
     <main className="min-h-screen bg-gray-900 text-gray-100 p-4 md:p-8 font-sans">
-      <div className="no-print max-w-6xl mx-auto flex flex-col md:flex-row gap-8">
+      <div className="no-print print:hidden max-w-6xl mx-auto flex flex-col md:flex-row gap-8">
         
         <div className="flex-1 flex flex-col gap-6">
           <section className="bg-gray-800 p-4 rounded-xl shadow-xl border border-gray-700">

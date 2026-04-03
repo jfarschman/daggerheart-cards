@@ -16,32 +16,50 @@ body {
 
 /* Print Styles: The Magic Sauce */
 @media print {
+  /* 1. Reset the page to remove browser safety margins */
   @page {
-    size: letter;
-    margin: 0; /* Let the container handle the padding instead */
+    size: letter portrait;
+    margin: 0.2in; 
   }
 
   body {
     background-color: white !important;
     margin: 0 !important;
     padding: 0 !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
   }
 
+  /* 2. Force the editor to hide */
+  .no-print {
+    display: none !important;
+  }
+
+  /* 3. The Page Container */
   .print-page {
-    width: 8.5in;
-    height: 11in;
-    overflow: hidden; /* Prevents "bleeding" into a second page */
+    width: 8in;
+    height: 10.5in;
+    margin: 0 auto;
+    page-break-after: always;
     display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: flex-start;
-    padding-top: 0.5in;
-    /* Only break page if there is actually another page coming */
-    page-break-after: auto; 
+    justify-content: center;
+    align-items: center; /* Centers the 9-card block perfectly on the paper */
   }
 
-  .print-page:not(:last-child) {
-    page-break-after: always;
+  /* 4. The 3x3 Grid Engine */
+  .print-grid {
+    display: grid;
+    /* Forces exactly 3 columns of 63mm and 3 rows of 89mm */
+    grid-template-columns: repeat(3, 63mm);
+    grid-template-rows: repeat(3, 89mm);
+    gap: 2mm; /* A tiny gap so your scissor cuts don't clip the neighboring card */
+  }
+
+  /* 5. Lock the physical card dimensions */
+  .dagger-card {
+    width: 63mm !important;
+    height: 89mm !important;
+    box-shadow: none !important; /* Removes drop shadows which look muddy on paper */
   }
 }
 
@@ -59,19 +77,53 @@ body {
 }
 
 @media print {
+  /* 1. Absolute zero margins on the physical paper */
+  @page {
+    size: letter portrait;
+    margin: 0 !important; 
+  }
+
+  body {
+    background-color: white !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  /* 2. Hide the UI */
+  .no-print {
+    display: none !important;
+  }
+
+  /* 3. The Page Container - Matches exact paper size */
   .print-page {
     width: 8.5in;
     height: 11in;
-    margin: 0 auto;
-    padding-top: 0.5in; /* Centers the 3x3 grid vertically on the paper */
+    margin: 0;
+    padding: 0;
+    page-break-after: always;
     display: flex;
     justify-content: center;
-    page-break-after: always;
+    align-items: center; /* Uses flexbox to perfectly center the grid vertically and horizontally */
   }
-  
-  /* Ensure the background of the cards stays white even in 'Dark Mode' browsers */
+
+  /* 4. The 3x3 Grid Engine */
+  .print-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 63mm);
+    grid-template-rows: repeat(3, 89mm);
+    gap: 2mm; 
+  }
+
+  /* 5. The Card Physics Container */
   .dagger-card {
-    -webkit-print-color-adjust: exact;
-    print-color-adjust: exact;
+    width: 63mm !important;
+    height: 89mm !important;
+    box-shadow: none !important;
+    /* CRITICAL FIX: Tells the printer never to split the inside of this box across pages */
+    break-inside: avoid !important;
+    page-break-inside: avoid !important;
+    overflow: hidden !important; 
   }
 }
