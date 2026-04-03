@@ -179,6 +179,14 @@ export default function CardEditor({ card, setCard }) {
                 className="w-full accent-blue-500"
               />
             </div>
+            {/* THE NEW FONT SIZE SLIDER */}
+            <div className="col-span-2">
+              <label className="block text-xs font-bold text-yellow-400 mb-1">Body Font Size ({card.imageConfig.fontSize || 11.5}px)</label>
+              <input 
+                type="range" name="fontSize" min="9" max="15" step="0.5" value={card.imageConfig.fontSize || 11.5} onChange={handleImageConfig}
+                className="w-full accent-yellow-500"
+              />
+            </div>
           </div>
         )}
       </div>

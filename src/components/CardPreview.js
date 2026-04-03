@@ -14,6 +14,8 @@ export default function CardPreview({ card }) {
 
   const textHeightPct = data.imageConfig.textHeight || 45;
   const imageHeightPct = 100 - textHeightPct;
+  // Extract the font size, defaulting to 11.5 if it doesn't exist yet
+  const bodyFontSize = data.imageConfig.fontSize || 11.5;
 
   return (
     <div className="dagger-card shadow-lg print:shadow-none bg-white flex flex-col relative overflow-hidden">
@@ -64,7 +66,7 @@ export default function CardPreview({ card }) {
         <div className="flex flex-col items-center w-full h-full pt-5">
           
           {/* Title */}
-          <p className="w-full text-center font-extrabold text-[14px] uppercase tracking-wider leading-none text-black">
+          <p className="w-full text-center font-[family-name:var(--font-anton)] text-[18px] uppercase tracking-wide leading-none text-black mt-1">
             {data.title}
           </p>
 
@@ -76,13 +78,16 @@ export default function CardPreview({ card }) {
           )}
 
           {/* Body Text */}
-          <div className="w-full mt-1.5 text-[9.5px] leading-snug text-center text-pretty whitespace-pre-wrap flex-grow text-gray-900 overflow-hidden">
+          <div 
+            className="w-full mt-1.5 leading-snug text-center text-pretty whitespace-pre-wrap flex-grow text-gray-900 overflow-hidden font-[family-name:var(--font-lora)]"
+            style={{ fontSize: `${bodyFontSize}px` }}
+          >
             {data.bodyText}
           </div>
 
           {/* Flavor Text (Locks to the bottom) */}
           {data.flavorText && (
-            <div className="w-full text-[7.5px] italic text-gray-500 text-center mt-auto border-t border-gray-200 pt-1 leading-tight">
+            <div className="w-full text-[8px] italic text-gray-600 text-center mt-auto border-t border-gray-300 pt-1 mb-2 leading-tight font-[family-name:var(--font-lora)]">
               "{data.flavorText}"
             </div>
           )}

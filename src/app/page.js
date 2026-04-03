@@ -14,7 +14,7 @@ export default function Home() {
     bodyText: "",
     flavorText: "",
     imagePath: "", 
-    imageConfig: { x: 50, y: 50, scale: 1 },
+    imageConfig: { x: 50, y: 50, scale: 1, textHeight: 45, fontSize: 11.5 },
     colorTheme: "#4a7c59"
   };
 
