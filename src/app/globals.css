@@ -96,16 +96,17 @@ body {
     display: none !important;
   }
 
-  /* 3. The Page Container - Matches exact paper size */
+  /* 3. The Page Container */
   .print-page {
     width: 8.5in;
     height: 11in;
     margin: 0;
-    padding: 0;
+    /* We use padding-top to explicitly set our top hardware margin */
+    padding-top: 0.35in; 
+    box-sizing: border-box; 
     page-break-after: always;
-    display: flex;
-    justify-content: center;
-    align-items: center; /* Uses flexbox to perfectly center the grid vertically and horizontally */
+    /* KILL FLEXBOX: Safari hates flex in print. We use a standard block layout instead. */
+    display: block; 
   }
 
   /* 4. The 3x3 Grid Engine */
@@ -114,6 +115,10 @@ body {
     grid-template-columns: repeat(3, 63mm);
     grid-template-rows: repeat(3, 89mm);
     gap: 2mm; 
+    /* Horizontally center the grid on the block page */
+    margin: 0 auto; 
+    /* Force the grid wrapper to snap exactly to the physical size of the cards */
+    width: max-content; 
   }
 
   /* 5. The Card Physics Container */
