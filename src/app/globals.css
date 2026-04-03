@@ -109,6 +109,11 @@ body {
     display: block; 
   }
 
+  /* Cancel the page break on the very last page */
+  .print-page:last-child {
+    page-break-after: auto;
+  }
+
   /* 4. The 3x3 Grid Engine */
   .print-grid {
     display: grid;

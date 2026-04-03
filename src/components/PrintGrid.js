@@ -12,6 +12,7 @@ export default function PrintGrid({ deck }) {
     <div className="hidden print:block bg-white">
       {chunks.map((page, pageIdx) => (
         <div key={pageIdx} className="print-page">
+          <div className="w-full h-[0.35in] block" />
           <div className="print-grid">
             {page.map((card) => (
               <div key={card.id} className="relative w-[63mm] h-[89mm]">
