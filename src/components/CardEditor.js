@@ -13,16 +13,62 @@ export default function CardEditor({ card, setCard }) {
     setCard({ ...card, traits: traitsArray });
   };
 
-  // Handler to convert an uploaded image file into a local preview URL
+  // Handler to convert, RESIZE, and COMPRESS an uploaded image
   const handleImageUpload = (e) => {
     const file = e.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setCard({ ...card, imagePath: reader.result });
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onloadend = (event) => {
+      // Create a temporary HTML image object to read the native dimensions
+      const img = new Image();
+      
+      img.onload = () => {
+        // 1. Calculate the new dimensions while locking the aspect ratio.
+        // 800px is incredibly sharp for a 63x89mm card, but uses a fraction of the data.
+        const MAX_SIZE = 800;
+        let width = img.width;
+        let height = img.height;
+
+        if (width > height) {
+          if (width > MAX_SIZE) {
+            height = Math.round(height * (MAX_SIZE / width));
+            width = MAX_SIZE;
+          }
+        } else {
+          if (height > MAX_SIZE) {
+            width = Math.round(width * (MAX_SIZE / height));
+            height = MAX_SIZE;
+          }
+        }
+
+        // 2. Create an invisible canvas to perform the resizing
+        const canvas = document.createElement('canvas');
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext('2d');
+        
+        // 3. Fill the background with white. 
+        // (If the user uploads a transparent PNG, converting to JPEG makes transparent pixels black. This prevents that.)
+        ctx.fillStyle = '#FFFFFF';
+        ctx.fillRect(0, 0, width, height);
+        
+        // 4. Draw the original image onto the canvas at the new, smaller size
+        ctx.drawImage(img, 0, 0, width, height);
+
+        // 5. Extract the newly drawn image as a Base64 string, forcing it to be a JPEG.
+        // The '0.7' parameter sets the JPEG quality to 70%, which is the sweet spot for file size vs. print quality.
+        const compressedBase64 = canvas.toDataURL('image/jpeg', 0.7);
+
+        // Save the tiny, optimized image string into our React state
+        setCard({ ...card, imagePath: compressedBase64 });
       };
-      reader.readAsDataURL(file);
-    }
+      
+      img.src = event.target.result;
+    };
+    
+    // Read the file from the user's hard drive
+    reader.readAsDataURL(file);
   };
 
   // Handler for the image positioning sliders
@@ -103,26 +149,34 @@ export default function CardEditor({ card, setCard }) {
 
         {/* Sliders will only show up if an image is actually loaded */}
         {card.imagePath && (
-          <div className="grid grid-cols-3 gap-4 bg-gray-900 p-3 rounded border border-gray-700">
+          <div className="grid grid-cols-2 gap-4 bg-gray-900 p-3 rounded border border-gray-700">
             <div>
-              <label className="block text-xs text-gray-500 mb-1">X Position ({card.imageConfig.x}%)</label>
+              <label className="block text-xs text-gray-500 mb-1">X Position ({card.imageConfig.x || 50}%)</label>
               <input 
-                type="range" name="x" min="0" max="100" value={card.imageConfig.x} onChange={handleImageConfig}
+                type="range" name="x" min="0" max="100" value={card.imageConfig.x || 50} onChange={handleImageConfig}
                 className="w-full"
               />
             </div>
             <div>
-              <label className="block text-xs text-gray-500 mb-1">Y Position ({card.imageConfig.y}%)</label>
+              <label className="block text-xs text-gray-500 mb-1">Y Position ({card.imageConfig.y || 50}%)</label>
               <input 
-                type="range" name="y" min="0" max="100" value={card.imageConfig.y} onChange={handleImageConfig}
+                type="range" name="y" min="0" max="100" value={card.imageConfig.y || 50} onChange={handleImageConfig}
                 className="w-full"
               />
             </div>
             <div>
-              <label className="block text-xs text-gray-500 mb-1">Scale ({card.imageConfig.scale}x)</label>
+              <label className="block text-xs text-gray-500 mb-1">Scale ({card.imageConfig.scale || 1}x)</label>
               <input 
-                type="range" name="scale" min="0.5" max="3" step="0.1" value={card.imageConfig.scale} onChange={handleImageConfig}
+                type="range" name="scale" min="0.5" max="3" step="0.1" value={card.imageConfig.scale || 1} onChange={handleImageConfig}
                 className="w-full"
+              />
+            </div>
+            {/* THE NEW TEXT HEIGHT SLIDER */}
+            <div>
+              <label className="block text-xs font-bold text-blue-400 mb-1">Text Box Height ({card.imageConfig.textHeight || 45}%)</label>
+              <input 
+                type="range" name="textHeight" min="25" max="75" value={card.imageConfig.textHeight || 45} onChange={handleImageConfig}
+                className="w-full accent-blue-500"
               />
             </div>
           </div>
