@@ -98,14 +98,12 @@ body {
 
   /* 3. The Page Container */
   .print-page {
+    position: relative; /* The key to absolute positioning */
     width: 8.5in;
-    height: 11in;
+    height: 11in; /* Lock the paper size */
     margin: 0;
-    /* We use padding-top to explicitly set our top hardware margin */
-    padding-top: 0.35in; 
-    box-sizing: border-box; 
+    padding: 0; /* Strip out our old padding */
     page-break-after: always;
-    /* KILL FLEXBOX: Safari hates flex in print. We use a standard block layout instead. */
     display: block; 
   }
 
@@ -120,9 +118,12 @@ body {
     grid-template-columns: repeat(3, 63mm);
     grid-template-rows: repeat(3, 89mm);
     gap: 2mm; 
-    /* Horizontally center the grid on the block page */
+    /* The Math Center: Pin it exactly 4.2mm from the top */
+    position: absolute;
+    top: 4.2mm;
+    left: 0;
+    right: 0;
     margin: 0 auto; 
-    /* Force the grid wrapper to snap exactly to the physical size of the cards */
     width: max-content; 
   }
 

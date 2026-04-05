@@ -66,13 +66,16 @@ export default function CardPreview({ card }) {
         <div className="flex flex-col items-center w-full h-full pt-5">
           
           {/* Title */}
-          <p className="w-full text-center font-[family-name:var(--font-anton)] text-[18px] uppercase tracking-wide leading-none text-black mt-1">
+          <p className="w-full text-center font-[family-name:var(--font-anton)] text-[18px] uppercase tracking-wider leading-none text-black mt-1">
             {data.title}
           </p>
 
-          {/* Traits */}
+          {/* Traits (Using negative margin to pull it up tightly against the title) */}
           {data.traits && data.traits.length > 0 && (
-            <p className="font-semibold capitalize italic text-[8.5px] text-gray-600 mt-1 text-center">
+            <p 
+              className="font-semibold capitalize italic text-[8.5px] text-gray-600 mb-1.5 text-center relative z-10"
+              style={{ marginTop: '-12px' }} 
+            >
               {data.traits.join(' • ')}
             </p>
           )}
